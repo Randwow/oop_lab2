@@ -4,19 +4,32 @@
 //
 //  Created by Nikita Makeev on 10/2/20.
 //
+#include <time.h>
 #include <iostream>
+#include <sys/time.h>
 using namespace std;
+struct timeval tv;
+struct tm *tm;
     class Doucument{
     private:
         
         char* name, * theme, * author;
-        int numberOfPage, day, month, year, hours, minutes;
+        int day, month, year, hours, minutes;
         
     public:
         Doucument(){
+            gettimeofday(&tv, NULL);
+            tm = localtime(&tv.tv_sec);
+            
+            day = tm->tm_mday;
+            month = tm->tm_mon + 1;
+            year = tm->tm_year + 1900;
+            hours = tm->tm_hour;
+            minutes = tm->tm_min;
+            
             cout << "Конструктор по умолчанию -------- " << this << endl;
         }
-        Doucument(char* name, char* theme, char* author, int numberOfPage, int day, int month, int year, int hour , int minutes){
+        Doucument(char* name, char* theme, char* author, int day, int month, int year, int hours, int minutes){
             
             this->name = new char[strlen(name)+1];
             strcpy(this->name, name);
@@ -27,13 +40,11 @@ using namespace std;
             this->author = new char[strlen(author)+1];
             strcpy(this->author, author);
             
-            numberOfPage = 0;
-            day = 0;
-            month = 0;
-            year = 0;
-            hours = 0;
-            minutes = 0;
-            
+            day = tm->tm_mday;
+            month = tm->tm_mon + 1;
+            year = tm->tm_year + 1900;
+            hours = tm->tm_hour;
+            minutes = tm->tm_min;
             cout << "Конструктор с параметром -------- " << this << endl;
         }
         Doucument(const Doucument &doc){
@@ -53,7 +64,6 @@ using namespace std;
             strcpy(this->author, doc.author);
             }
             
-            this->numberOfPage = doc.numberOfPage;
             this->day = doc.day;
             this->year = doc.year;
             this->month = doc.month;
@@ -110,6 +120,12 @@ using namespace std;
             if ((day != 0)&&(month != 0) && (year!= 0))
               cout << "\tTime of the last Save: " <<day<<"-"<<month<<"-"<<year<<" "<<hours<<":"<<minutes << "\n" << endl;
             }
+        
+        void printTime(){
+            if ((day != 0)&&(month != 0) && (year!= 0))
+              cout << "\tTime of creation document: " <<day<<"-"<<month<<"-"<<year<<" "<<hours<<":"<<minutes << "\n" << endl;
+        }
+        
     };
 int main(int argc, const char * argv[]) {
     Doucument doc;
@@ -117,7 +133,7 @@ int main(int argc, const char * argv[]) {
     int choice{0},
     newChoice{0},
     choiceInNewChoise{0};
-    
+
         while (choice != 4){
             cout << "1. Enter new Document " << endl;
             cout << "2. Change values of Document " << endl;
@@ -126,64 +142,27 @@ int main(int argc, const char * argv[]) {
             
             cin >> choice;
             
-            char value[100];
+            char newName[100],newAuthor[100],newTheme[100];
             int newDay{0},
             newMonth{0},
             newYear{0},
             newHour{0},
             newMinutes{0};
-            
+
             switch (choice){
                 case 1:
-                    
+                    doc.printTime();
                     cout << " Name of Document: ";
-                    cin >> value;
-                    doc.setName(value);
+                    cin >> newName;
+                    doc.setName(newName);
                     
                     cout << " Topic of Document: ";
-                    cin >> value;
-                    doc.setTheme(value);
+                    cin >> newTheme;
+                    doc.setTheme(newTheme);
                     
                     cout << " Enter Author of Document: ";
-                    cin >> value;
-                    doc.setAuthor(value);
-                    
-                    cout << " Enter Day when Document was saving:= ";
-                    cin >> newDay;
-                    if (newDay <= 1 && newDay > 31) {
-                        cout << "try again you enter value of hours < 1 or > 31 ";
-                        cin >> newDay;
-                    }
-                    doc.setDay(newDay);
-                    
-                    cout << " Enter Month when Document was saving:= ";
-                    cin >> newMonth;
-                    if (newMonth <= 1 && newMonth > 12) {
-                        cout << "try again you enter value of hours < 1 or > 12 ";
-                        cin >> newMonth;
-                    }
-                    doc.setMonth(newMonth);
-                    
-                    cout << " Enter Year when Document was saving:= ";
-                    cin >> newYear;
-                    doc.setYear(newYear);
-                    
-                    cout << " Enter Hours when Document was saving:= ";
-                    cin >> newHour;
-                    if (newHour > 24 && newHour < 0) {
-                        cout<<"try again you enter value of hours < 0 or > 24 ";
-                        cin >> newHour;
-                    }
-                    doc.setHours(newHour);
-                    
-                    cout << " Enter Minutes when Document was saving:= ";
-                    cin >> newMinutes;
-                    if (newMinutes > 60 && newMinutes <  0) {
-                        cout<<"try again you enter value of minutes < 0 or > 60 ";
-                        cin >> newMinutes;
-                    }
-                    doc.setMinutes(newMinutes);
-                    
+                    cin >> newAuthor;
+                    doc.setAuthor(newAuthor);
                     break;
                     
                 case 2:
@@ -197,8 +176,8 @@ int main(int argc, const char * argv[]) {
                     switch (newChoice){
                         case 1:
                             cout << " Enter new Topic of Document: ";
-                            cin >> value;
-                            doc.setTheme(value);
+                            cin >> newTheme;
+                            doc.setTheme(newTheme);
                             
                             break;
                         case 2:
@@ -209,7 +188,8 @@ int main(int argc, const char * argv[]) {
                             cout << "3. Year " << endl;
                             cout << "4. Hours " << endl;
                             cout << "5. Minutes " << endl;
-                            cout << "6. Do not change anything" << endl;
+                            cout << "6. Seconds " << endl;
+                            cout << "7. Do not change anything" << endl;
                             cin >> choiceInNewChoise;
                             
                             switch (choiceInNewChoise) {
@@ -270,7 +250,6 @@ int main(int argc, const char * argv[]) {
                         }
                     break;
                 case 3:
-                    
                     doc.printDocument();
                     break;
                 default:
