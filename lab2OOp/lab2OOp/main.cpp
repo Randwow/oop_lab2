@@ -13,7 +13,7 @@ struct tm *tm;
     class Doucument{
     private:
         
-        char* name, * theme, * author;
+        char* name{nullptr}, * theme{nullptr}, * author{nullptr};
         int day, month, year, hours, minutes;
         
     public:
@@ -44,7 +44,7 @@ struct tm *tm;
             month = tm->tm_mon + 1;
             year = tm->tm_year + 1900;
             hours = tm->tm_hour;
-            minutes = tm->tm_min;
+            minutes = tm->tm_min;;
             cout << "Конструктор с параметром -------- " << this << endl;
         }
         Doucument(const Doucument &doc){
